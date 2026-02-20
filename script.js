@@ -101,16 +101,22 @@ function incrementReclamationCount(event) {
         return;
     }
 
-    event.preventDefault(); // Empêcher le submit par défaut temporairement
+    event.preventDefault(); // Empêcher le submit par défaut
     
-    // Incrémenter le compteur
+    // Récupérer les données du formulaire
+    const formData = new FormData(form);
+    const email = formData.get('email');
+    const subject = formData.get('subject');
+    const message = formData.get('message');
+    
+    // Incrémenter le compteur localement
     reclamationCount++;
     localStorage.setItem('reclamationCount', reclamationCount);
     
     // Ajouter une réclamation avec timestamp
     reclamations.push({
-        email: form.email.value,
-        matiere: form.subject.value,
+        email: email,
+        matiere: subject,
         date: new Date().toLocaleDateString('fr-FR'),
         heure: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
     });
@@ -121,14 +127,24 @@ function incrementReclamationCount(event) {
         badge.textContent = reclamationCount;
     }
     
-    // Afficher un message de confirmation
-    alert('✅ Votre réclamation a été envoyée avec succès!');
-    
-    // Réinitialiser le formulaire
-    form.reset();
-    
-    // Soumettre le formulaire à Formspree
-    form.submit();
+    // Envoyer à Formspree via fetch
+    fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Accept': 'application/json'
+        }
+    }).then(response => {
+        if (response.ok) {
+            alert('✅ Votre réclamation a été envoyée avec succès!');
+            form.reset();
+        } else {
+            alert('❌ Erreur lors de l\'envoi. Veuillez réessayer.');
+        }
+    }).catch(error => {
+        alert('❌ Erreur de connexion. Vérifiez votre connexion internet.');
+        console.log('Erreur:', error);
+    });
 }
 
 // Charger les notes de l'élève
