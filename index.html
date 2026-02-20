@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Notes - EduGrade</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container login-box active">
+        <h1>📚 Gestion des Notes</h1>
+        <h2>Connexion</h2>
+        
+        <select id="userType">
+            <option value="">Type d'utilisateur</option>
+            <option value="eleve">Élève</option>
+            <option value="prof">Professeur</option>
+        </select>
+
+        <input type="text" id="username" placeholder="Identifiant">
+        <input type="password" id="password" placeholder="Mot de passe">
+        
+        <button onclick="login()">Se connecter</button>
+        <button onclick="showAccounts()">Voir les comptes</button>
+    </div>
+
+    <div class="container dashboard" id="eleveDashboard">
+        <h1>📚 Mes Notes</h1>
+        <button class="btn-logout" onclick="logout()">Déconnexion</button>
+        
+        <div class="stat">
+            <p>Moyenne Générale</p>
+            <h3 id="moyenne">--/20</h3>
+        </div>
+
+        <h2>📊 Liste des notes</h2>
+        <table id="notesTable">
+            <thead>
+                <tr>
+                    <th>Matière</th>
+                    <th>Note /10</th>
+                    <th>Note /20</th>
+                    <th>Commentaire</th>
+                </tr>
+            </thead>
+            <tbody id="notesBody"></tbody>
+        </table>
+
+        <div class="section">
+            <h2>💬 Formulaire de Réclamation</h2>
+            <form class="complaint-form" action="https://formspree.io/f/mojnnknq" method="POST">
+                <div class="form-group">
+                    <label for="email">Votre email :</label>
+                    <input type="email" id="email" name="email" placeholder="exemple@email.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="subject">Sujet de votre réclamation :</label>
+                    <select id="subject" name="subject" required>
+                        <option value="">Sélectionner une matière</option>
+                        <option value="Maths">Mathématiques</option>
+                        <option value="Français">Français</option>
+                        <option value="Anglais">Anglais</option>
+                        <option value="Sciences">Sciences</option>
+                        <option value="Autre">Autre</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Votre réclamation :</label>
+                    <textarea id="message" name="message" placeholder="Décrivez votre réclamation en détail..." rows="6" required></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" onclick="incrementReclamationCount(event)">📧 Envoyer votre réclamation</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="container dashboard" id="profDashboard">
+        <h1>👨‍🏫 Espace Professeur</h1>
+        <button class="btn-logout" onclick="logout()">Déconnexion</button>
+
+        <div class="section">
+            <h2>➕ Ajouter une note</h2>
+            
+            <select id="eleveSelect">
+                <option value="">Choisir un élève</option>
+                <option value="Sophie">Sophie Martin</option>
+                <option value="Lucas">Lucas Dubois</option>
+                <option value="Emma">Emma Bernard</option>
+            </select>
+
+            <select id="matiereSelect">
+                <option value="">Choisir une matière</option>
+                <option value="Maths">Mathématiques</option>
+                <option value="Français">Français</option>
+                <option value="Anglais">Anglais</option>
+                <option value="Sciences">Sciences</option>
+            </select>
+
+            <input type="number" id="noteSur10" placeholder="Note sur 10" min="0" max="10" step="0.5">
+            <input type="text" id="commentaire" placeholder="Commentaire (optionnel)">
+            
+            <button onclick="addNote()">Enregistrer la note</button>
+        </div>
+
+        <h2>📋 Toutes les notes</h2>
+        <table id="allNotesTable">
+            <thead>
+                <tr>
+                    <th>Élève</th>
+                    <th>Matière</th>
+                    <th>Note /10</th>
+                    <th>Note /20</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="allNotesBody"></tbody>
+        </table>
+
+        <div class="section">
+            <h2>💬 Réclamations <span id="reclamBadge" class="badge">0</span></h2>
+            <div id="reclamations" class="reclamations-list"></div>
+        </div>
+    </div>
+
+    <div class="chatbot" onclick="toggleChat()">💬</div>
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">🤖 Assistant</div>
+        <div class="chat-messages" id="chatMessages">
+            <div class="message bot">Bonjour ! Je peux vous aider. Posez vos questions sur le site !</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Votre question...">
+            <button onclick="sendChat()">Envoyer</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
